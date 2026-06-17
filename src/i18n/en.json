@@ -1,12 +1,75 @@
 {
+  "nav": {
+    "story": "Our Story",
+    "schedule": "Schedule",
+    "location": "Getting There",
+    "gift": "Gift",
+    "rsvp": "RSVP"
+  },
   "home": {
     "kicker": "We're getting married",
     "names": "Neta & Yotam",
     "date": "September 18, 2026",
+    "dateLong": "Friday, September 18, 2026",
     "venue": "Venue name · City",
-    "tagline": "We'd love to celebrate with you",
+    "tagline": "We'd love to celebrate our special day with you",
     "cta": "RSVP",
-    "wip": "Site under construction — our story, schedule, directions and more are coming soon."
+    "scrollHint": "Scroll for details"
+  },
+  "countdown": {
+    "title": "Counting down",
+    "days": "Days",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds",
+    "today": "The big day is here!"
+  },
+  "story": {
+    "title": "Our Story",
+    "p1": "We met seven years ago, when life brought us together at just the right moment. We haven't stopped laughing, traveling and dreaming together since.",
+    "p2": "After all the adventures, we decided to take the big step — and we want you there with us when we say “I do”."
+  },
+  "schedule": {
+    "title": "Schedule",
+    "items": [
+      { "time": "6:30 PM", "label": "Reception" },
+      { "time": "7:30 PM", "label": "Ceremony" },
+      { "time": "8:30 PM", "label": "Dinner & Dancing" }
+    ]
+  },
+  "location": {
+    "title": "Getting There",
+    "venueName": "Venue name",
+    "address": "12 Example St, City",
+    "mapCta": "Open in Maps",
+    "parkingTitle": "Parking",
+    "parking": "Free parking is available at the venue, with a public lot a short walk away.",
+    "accessTitle": "Accessibility",
+    "access": "The venue is wheelchair and stroller accessible, with step-free entry and accessible parking."
+  },
+  "gift": {
+    "title": "Gift",
+    "intro": "Your presence is the greatest gift. For anyone who'd like to spoil us, here are a few options:",
+    "bitLabel": "Bit",
+    "bitValue": "050-0000000",
+    "payboxLabel": "PayBox",
+    "payboxValue": "PayBox link",
+    "bankLabel": "Bank transfer",
+    "bankValue": "Bank 00 · Branch 000 · Account 000000",
+    "copy": "Copy",
+    "copied": "Copied!"
+  },
+  "rsvp": {
+    "title": "Let us know you're coming",
+    "text": "To confirm your attendance, use the personal link from your invitation.",
+    "deadline": "Please reply by August 18, 2026",
+    "cta": "Confirm attendance",
+    "noToken": "Didn't get a personal link yet? Reach out and we'll be glad to help."
+  },
+  "footer": {
+    "names": "Neta & Yotam",
+    "date": "18.09.2026",
+    "madeWith": "Can't wait to see you"
   },
   "lang": {
     "toggleTo": "עברית",
