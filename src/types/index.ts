@@ -46,3 +46,32 @@ export interface SeatAssignment {
 export interface Admin {
   email: string;
 }
+
+// --- RPC payloads (shape returned by get_invite / submit_rsvp) ---
+
+export interface InviteGuest {
+  full_name: string;
+  party_label: string | null;
+  max_party: number;
+  language: Lang;
+}
+
+export interface InviteRsvp {
+  attending: boolean;
+  num_adults: number;
+  num_kids: number;
+  dietary: string | null;
+  blessing: string | null;
+  responded_at: string;
+}
+
+export interface InviteTable {
+  name: string;
+  zone: string | null;
+}
+
+export interface InviteData {
+  guest: InviteGuest;
+  rsvp: InviteRsvp | null;
+  table: InviteTable | null;
+}
