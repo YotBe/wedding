@@ -1,0 +1,15 @@
+{
+  "home": {
+    "kicker": "We're getting married",
+    "names": "Neta & Yotam",
+    "date": "September 18, 2026",
+    "venue": "Venue name · City",
+    "tagline": "We'd love to celebrate with you",
+    "cta": "RSVP",
+    "wip": "Site under construction — our story, schedule, directions and more are coming soon."
+  },
+  "lang": {
+    "toggleTo": "עברית",
+    "switchAria": "Switch language to Hebrew"
+  }
+}
