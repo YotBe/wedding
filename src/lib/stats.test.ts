@@ -15,6 +15,8 @@ function guest(rsvp: Partial<Rsvp> | null): GuestWithRsvp {
     language: 'he',
     created_at: '',
     table_name: null,
+    table_id: null,
+    seats: null,
     rsvp: rsvp
       ? { id: '', guest_id: '', attending: true, num_adults: 0, num_kids: 0, dietary: null, blessing: null, responded_at: '', ...rsvp }
       : null,

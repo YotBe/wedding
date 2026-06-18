@@ -2,27 +2,32 @@ import { supabase } from './supabase';
 import { generateInviteToken } from './token';
 import type { Guest, Rsvp, Side, Lang } from '../types';
 
-// A guest row joined with its rsvp (and assigned table name, if any) — the
+// A guest row joined with its rsvp (and assigned table, if any) — the
 // shape the admin guest list / RSVP tracker works with.
 export interface GuestWithRsvp extends Guest {
   rsvp: Rsvp | null;
   table_name: string | null;
+  table_id: string | null;
+  seats: number | null;
 }
 
-const SELECT = '*, rsvps(*), seat_assignments(seats, tables(name))';
+const SELECT = '*, rsvps(*), seat_assignments(seats, table_id, tables(name))';
 
 // PostgREST returns embedded resources as arrays; normalise to single values.
 interface RawGuest extends Guest {
   rsvps: Rsvp[] | null;
-  seat_assignments: { seats: number; tables: { name: string } | null }[] | null;
+  seat_assignments: { seats: number; table_id: string; tables: { name: string } | null }[] | null;
 }
 
 function normalise(raw: RawGuest): GuestWithRsvp {
   const { rsvps, seat_assignments, ...guest } = raw;
+  const assignment = seat_assignments?.[0] ?? null;
   return {
     ...guest,
     rsvp: rsvps?.[0] ?? null,
-    table_name: seat_assignments?.[0]?.tables?.name ?? null,
+    table_name: assignment?.tables?.name ?? null,
+    table_id: assignment?.table_id ?? null,
+    seats: assignment?.seats ?? null,
   };
 }
 
