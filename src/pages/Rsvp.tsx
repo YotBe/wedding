@@ -5,6 +5,7 @@ import { LanguageToggle } from '../components/LanguageToggle';
 import { Stepper } from '../components/Stepper';
 import { useLanguage } from '../i18n/LanguageProvider';
 import { getInvite, submitRsvp } from '../lib/rsvp';
+import { notifyRsvp } from '../lib/whatsapp';
 import { DIETARY_KINDS, parseDietary, serializeDietary } from '../lib/dietary';
 import type { DietaryKind, InviteData, InviteRsvp } from '../types';
 
@@ -95,6 +96,7 @@ export default function Rsvp() {
       });
       setSavedRsvp(rsvp);
       setStatus('confirmed');
+      void notifyRsvp(token); // best-effort: ping the couple's WhatsApp feed
     } catch (err) {
       const message = err instanceof Error ? err.message : '';
       setFormError(message.includes('party_too_large') ? t('rsvpPage.partyTooLarge') : t('rsvpPage.submitError'));
