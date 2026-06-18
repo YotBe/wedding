@@ -42,10 +42,10 @@ as $$
     )
   end
   from (select p_token as token) q
-  left join guests g            on g.invite_token = q.token
-  left join rsvps r             on r.guest_id = g.id
-  left join seat_assignments sa on sa.guest_id = g.id
-  left join tables t            on t.id = sa.table_id;
+  left join public.guests g            on g.invite_token = q.token
+  left join public.rsvps r             on r.guest_id = g.id
+  left join public.seat_assignments sa on sa.guest_id = g.id
+  left join public.tables t            on t.id = sa.table_id;
 $$;
 
 -- submit_rsvp(...): upsert the rsvp for the guest owning p_token.
@@ -68,10 +68,10 @@ declare
   v_max_party  int;
   v_adults     int;
   v_kids       int;
-  v_rsvp       rsvps;
+  v_rsvp       public.rsvps;
 begin
   select id, max_party into v_guest_id, v_max_party
-  from guests
+  from public.guests
   where invite_token = p_token;
 
   if v_guest_id is null then
@@ -91,7 +91,7 @@ begin
     end if;
   end if;
 
-  insert into rsvps (guest_id, attending, num_adults, num_kids, dietary, blessing, responded_at)
+  insert into public.rsvps (guest_id, attending, num_adults, num_kids, dietary, blessing, responded_at)
   values (v_guest_id, p_attending, v_adults, v_kids, nullif(p_dietary, ''), nullif(p_blessing, ''), now())
   on conflict (guest_id) do update
     set attending    = excluded.attending,
