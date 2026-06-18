@@ -11,6 +11,7 @@ import {
 } from '../../lib/admin';
 import { parseCsv, toCsv, downloadCsv } from '../../lib/csv';
 import { rsvpUrl, waMeLink } from '../../lib/links';
+import { sendInvites } from '../../lib/whatsapp';
 import type { Lang, Side } from '../../types';
 
 type StatusFilter = 'all' | 'responded' | 'attending' | 'declined' | 'noResponse';
@@ -41,6 +42,7 @@ export default function Guests() {
   const [editing, setEditing] = useState<GuestWithRsvp | 'new' | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [linksCopied, setLinksCopied] = useState(false);
+  const [sendState, setSendState] = useState<Record<string, 'sending' | 'sent' | 'failed'>>({});
   const fileRef = useRef<HTMLInputElement>(null);
 
   async function reload() {
@@ -143,6 +145,38 @@ export default function Guests() {
     }
   }
 
+  // Send WhatsApp invites (personal RSVP links) to guests who have a phone.
+  async function handleSendInvites(targets: GuestWithRsvp[]) {
+    const withPhone = targets.filter((g) => g.phone);
+    if (withPhone.length === 0) {
+      setNotice(t('admin.guests.noPhones'));
+      return;
+    }
+    setNotice(null);
+    setSendState((s) => {
+      const next = { ...s };
+      for (const g of withPhone) next[g.id] = 'sending';
+      return next;
+    });
+    try {
+      const results = await sendInvites(withPhone.map((g) => g.id));
+      setSendState((s) => {
+        const next = { ...s };
+        for (const r of results) next[r.id] = r.ok ? 'sent' : 'failed';
+        return next;
+      });
+      const ok = results.filter((r) => r.ok).length;
+      setNotice(t('admin.guests.sentSummary', { ok, total: results.length }));
+    } catch {
+      setSendState((s) => {
+        const next = { ...s };
+        for (const g of withPhone) next[g.id] = 'failed';
+        return next;
+      });
+      setNotice(t('admin.guests.sendError'));
+    }
+  }
+
   const FILTERS: StatusFilter[] = ['all', 'noResponse', 'attending', 'declined'];
 
   return (
@@ -215,20 +249,40 @@ export default function Guests() {
         <div className="flex flex-wrap items-center gap-3">
           <p className="text-xs text-stone-400">{t('admin.guests.count', { count: filtered.length })}</p>
           {filtered.length > 0 && (
-            <button
-              type="button"
-              onClick={copyLinks}
-              className="text-xs text-stone-500 underline-offset-2 hover:text-sand-dark hover:underline"
-            >
-              {linksCopied ? t('admin.guests.copied') : t('admin.guests.copyLinks')}
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={copyLinks}
+                className="text-xs text-stone-500 underline-offset-2 hover:text-sand-dark hover:underline"
+              >
+                {linksCopied ? t('admin.guests.copied') : t('admin.guests.copyLinks')}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (window.confirm(t('admin.guests.confirmSendList', { count: filtered.length }))) {
+                    void handleSendInvites(filtered);
+                  }
+                }}
+                className="text-xs text-green-700 underline-offset-2 hover:underline"
+              >
+                {t('admin.guests.sendInvitesList')}
+              </button>
+            </>
           )}
         </div>
       )}
 
       <ul className="space-y-2">
         {filtered.map((g) => (
-          <GuestRow key={g.id} guest={g} onEdit={() => setEditing(g)} onDelete={() => handleDelete(g)} />
+          <GuestRow
+            key={g.id}
+            guest={g}
+            sendStatus={sendState[g.id]}
+            onSend={() => void handleSendInvites([g])}
+            onEdit={() => setEditing(g)}
+            onDelete={() => handleDelete(g)}
+          />
         ))}
       </ul>
 
@@ -248,10 +302,14 @@ export default function Guests() {
 
 function GuestRow({
   guest,
+  sendStatus,
+  onSend,
   onEdit,
   onDelete,
 }: {
   guest: GuestWithRsvp;
+  sendStatus?: 'sending' | 'sent' | 'failed';
+  onSend: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }) {
@@ -310,6 +368,21 @@ function GuestRow({
           >
             {t('admin.guests.whatsapp')}
           </a>
+          <button
+            type="button"
+            onClick={onSend}
+            disabled={!guest.phone || sendStatus === 'sending'}
+            className="text-xs text-green-700 hover:underline disabled:cursor-not-allowed disabled:text-stone-300"
+            title={!guest.phone ? t('admin.guests.noPhone') : undefined}
+          >
+            {sendStatus === 'sending'
+              ? t('admin.guests.sending')
+              : sendStatus === 'sent'
+                ? t('admin.guests.sent')
+                : sendStatus === 'failed'
+                  ? t('admin.guests.sendFailed')
+                  : t('admin.guests.sendInvite')}
+          </button>
           <button type="button" onClick={onEdit} className="text-xs text-stone-500 hover:text-sand-dark">
             {t('admin.guests.edit')}
           </button>
