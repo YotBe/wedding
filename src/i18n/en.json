@@ -105,13 +105,23 @@
     "tableLabel": "Your table",
     "backToSite": "Back to site"
   },
+  "findTable": {
+    "title": "Where am I seated?",
+    "intro": "Type your full name to find your table number.",
+    "placeholder": "Your full name",
+    "search": "Search",
+    "searching": "Searching...",
+    "yourTable": "Your table",
+    "notFound": "We couldn't find a seat under that name. Check the spelling or reach out and we'll help.",
+    "error": "Search failed. Please try again in a moment."
+  },
   "admin": {
     "loading": "Loading...",
     "loadError": "Failed to load data. Refresh and try again.",
     "notAuthorizedTitle": "Not authorized",
     "notAuthorizedBody": "This account isn't allowed in the admin area. Sign in with an admin account.",
     "signOut": "Sign out",
-    "nav": { "dashboard": "Overview", "guests": "Guests" },
+    "nav": { "dashboard": "Overview", "guests": "Guests", "seating": "Seating" },
     "login": {
       "title": "Admin sign in",
       "email": "Email",
@@ -141,6 +151,23 @@
     },
     "side": { "bride": "Bride's side", "groom": "Groom's side", "both": "Both" },
     "lang": { "he": "Hebrew", "en": "English" },
+    "seating": {
+      "title": "Seating plan",
+      "addTable": "Add table",
+      "editTable": "Edit table",
+      "tableName": "Table name",
+      "capacity": "Capacity",
+      "zone": "Zone",
+      "fill": "{{used}}/{{capacity}} seats",
+      "over": "over capacity",
+      "noTables": "No tables yet. Start by adding one.",
+      "unassignedCount": "Unassigned guests: {{count}}",
+      "unassigned": "Unassigned",
+      "seats": "{{count}} seats",
+      "noGuests": "No guests to seat.",
+      "confirmDelete": "Delete {{name}}?",
+      "tableNotEmpty": "Can't delete a table with guests assigned. Move them first."
+    },
     "guests": {
       "title": "Manage guests",
       "add": "Add guest",

@@ -50,6 +50,9 @@ export default function AdminLayout() {
             <NavLink to="/admin/guests" className={linkClass}>
               {t('admin.nav.guests')}
             </NavLink>
+            <NavLink to="/admin/seating" className={linkClass}>
+              {t('admin.nav.seating')}
+            </NavLink>
           </nav>
           <button
             type="button"
