@@ -4,9 +4,13 @@ import { LanguageProvider } from './i18n/LanguageProvider';
 import Home from './pages/Home';
 
 // Lazy-loaded so the Supabase client (and its env-var requirement) is only
-// pulled in when a guest actually opens their RSVP link — the public Home
-// page stays independent of backend configuration.
+// pulled in when a guest opens their RSVP link or an admin opens /admin — the
+// public Home page stays independent of backend configuration.
 const Rsvp = lazy(() => import('./pages/Rsvp'));
+const AdminLayout = lazy(() => import('./components/admin/AdminLayout'));
+const AdminLogin = lazy(() => import('./pages/admin/Login'));
+const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
+const Guests = lazy(() => import('./pages/admin/Guests'));
 
 export default function App() {
   return (
@@ -16,6 +20,11 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/rsvp/:token" element={<Rsvp />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="guests" element={<Guests />} />
+            </Route>
           </Routes>
         </Suspense>
       </BrowserRouter>
