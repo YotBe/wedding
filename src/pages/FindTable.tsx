@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { LanguageToggle } from '../components/LanguageToggle';
 import { findTable } from '../lib/findTable';
@@ -8,8 +9,21 @@ type Result = { status: 'idle' | 'searching' | 'found' | 'notfound' | 'error'; t
 
 export default function FindTable() {
   const { t } = useTranslation();
+  const [params] = useSearchParams();
+  // Venue-entrance kiosk mode: ?kiosk=1 — bigger UI, auto-resets for the next guest.
+  const kiosk = params.get('kiosk') === '1';
   const [name, setName] = useState('');
   const [result, setResult] = useState<Result>({ status: 'idle' });
+
+  // In kiosk mode, clear the screen a few seconds after showing a result.
+  useEffect(() => {
+    if (!kiosk || (result.status !== 'found' && result.status !== 'notfound')) return;
+    const id = setTimeout(() => {
+      setResult({ status: 'idle' });
+      setName('');
+    }, 8000);
+    return () => clearTimeout(id);
+  }, [kiosk, result.status]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -29,9 +43,11 @@ export default function FindTable() {
         <LanguageToggle />
       </div>
 
-      <div className="w-full max-w-md text-center">
-        <h1 className="font-serif text-3xl text-stone-800">{t('findTable.title')}</h1>
-        <p className="mt-3 text-stone-600">{t('findTable.intro')}</p>
+      <div className={`w-full text-center ${kiosk ? 'max-w-2xl' : 'max-w-md'}`}>
+        <h1 className={`font-serif text-stone-800 ${kiosk ? 'text-5xl' : 'text-3xl'}`}>
+          {t('findTable.title')}
+        </h1>
+        <p className={`mt-3 text-stone-600 ${kiosk ? 'text-xl' : ''}`}>{t('findTable.intro')}</p>
 
         <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-3 sm:flex-row">
           <input
@@ -54,8 +70,12 @@ export default function FindTable() {
           {result.status === 'found' && result.table && (
             <div className="rounded-3xl bg-sand/10 px-6 py-8">
               <p className="text-xs uppercase tracking-wider text-stone-500">{t('findTable.yourTable')}</p>
-              <p className="mt-2 font-serif text-4xl text-sand-dark">{result.table.name}</p>
-              {result.table.zone && <p className="mt-1 text-stone-500">{result.table.zone}</p>}
+              <p className={`mt-2 font-serif text-sand-dark ${kiosk ? 'text-7xl' : 'text-4xl'}`}>
+                {result.table.name}
+              </p>
+              {result.table.zone && (
+                <p className={`mt-1 text-stone-500 ${kiosk ? 'text-2xl' : ''}`}>{result.table.zone}</p>
+              )}
             </div>
           )}
           {result.status === 'notfound' && (
@@ -66,9 +86,11 @@ export default function FindTable() {
           )}
         </div>
 
-        <a href="/" className="mt-6 block text-sm text-stone-400 hover:text-sand-dark">
-          {t('rsvpPage.backToSite')}
-        </a>
+        {!kiosk && (
+          <a href="/" className="mt-6 block text-sm text-stone-400 hover:text-sand-dark">
+            {t('rsvpPage.backToSite')}
+          </a>
+        )}
       </div>
     </main>
   );

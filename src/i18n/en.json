@@ -182,6 +182,7 @@
       "confirmed": "confirmed {{adults}} adults, {{kids}} kids",
       "confirmDelete": "Delete {{name}}?",
       "copyLink": "Copy link",
+      "copyLinks": "Copy links for list (reminders)",
       "copied": "Copied!",
       "whatsapp": "WhatsApp",
       "waText": "You're invited to Neta & Yotam's wedding! Please RSVP here: {{url}}",
@@ -203,6 +204,7 @@
   "footer": {
     "names": "Neta & Yotam",
     "date": "18.09.2026",
+    "findTable": "Find my table",
     "madeWith": "Can't wait to see you"
   },
   "lang": {

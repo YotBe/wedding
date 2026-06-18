@@ -51,7 +51,7 @@ export function Hero() {
       >
         <span>{t('home.scrollHint')}</span>
         <svg
-          className="h-5 w-5 animate-bounce"
+          className="h-5 w-5 animate-bounce motion-reduce:animate-none"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
