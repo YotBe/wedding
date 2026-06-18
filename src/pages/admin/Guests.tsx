@@ -40,6 +40,7 @@ export default function Guests() {
   const [filter, setFilter] = useState<StatusFilter>('all');
   const [editing, setEditing] = useState<GuestWithRsvp | 'new' | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [linksCopied, setLinksCopied] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   async function reload() {
@@ -129,6 +130,19 @@ export default function Guests() {
     downloadCsv(`guests-${new Date().toISOString().slice(0, 10)}.csv`, toCsv(header, rows));
   }
 
+  // Bulk "reminder workflow": copy the currently filtered guests (e.g. filtered
+  // to non-responders) as "name — link" lines, ready to paste and send.
+  async function copyLinks() {
+    const text = filtered.map((g) => `${g.full_name} — ${rsvpUrl(g.invite_token)}`).join('\n');
+    try {
+      await navigator.clipboard.writeText(text);
+      setLinksCopied(true);
+      setTimeout(() => setLinksCopied(false), 1500);
+    } catch {
+      /* ignore */
+    }
+  }
+
   const FILTERS: StatusFilter[] = ['all', 'noResponse', 'attending', 'declined'];
 
   return (
@@ -198,7 +212,18 @@ export default function Guests() {
       {loading ? (
         <p className="text-stone-500">{t('admin.loading')}</p>
       ) : (
-        <p className="text-xs text-stone-400">{t('admin.guests.count', { count: filtered.length })}</p>
+        <div className="flex flex-wrap items-center gap-3">
+          <p className="text-xs text-stone-400">{t('admin.guests.count', { count: filtered.length })}</p>
+          {filtered.length > 0 && (
+            <button
+              type="button"
+              onClick={copyLinks}
+              className="text-xs text-stone-500 underline-offset-2 hover:text-sand-dark hover:underline"
+            >
+              {linksCopied ? t('admin.guests.copied') : t('admin.guests.copyLinks')}
+            </button>
+          )}
+        </div>
       )}
 
       <ul className="space-y-2">
